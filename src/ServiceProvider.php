@@ -1,13 +1,13 @@
 <?php
 
-namespace ChrisBraybrooke\SPABackend;
+namespace PurpleMountain\Organisations;
 
-use ChrisBraybrooke\NAMESPACE_HERE\Providers\EventServiceProvider;
+use PurpleMountain\Organisations\Providers\EventServiceProvider;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Illuminate\FileSystem\FileSystem;
 
-class ServiceProvider extends ServiceProvider
+class ServiceProvider extends BaseServiceProvider
 {
     /** 
      * Put together the path to the config file.
@@ -26,7 +26,7 @@ class ServiceProvider extends ServiceProvider
      */
     private function shortName(): string
     {
-        return 'chrisbraybrooke-package';
+        return 'organisations';
     }
 
 
@@ -70,13 +70,12 @@ class ServiceProvider extends ServiceProvider
      */
     private function handleMigrations()
     {
-        $files = new FileSystem();
-        foreach ($files->glob('database/migrations/*_*.php') as $key => $file) {
-            $file->requireOnce($file);
-        }
+        $this->publishes([
+            __DIR__.'/../database/migrations/2020_06_04_191936_create_organisations_table.php.stub' => database_path('migrations/2020_06_04_191936_create_organisations_table.php')
+        ], $this->shortName() . '-migrations');
 
         $this->publishes([
-            __DIR__.'/../database/migrations/default.php.stub' => database_path('migrations/2020_03_15_000000_default.php')
+            __DIR__.'/../database/migrations/2020_06_04_195750_create_organisation_user_table.php.stub' => database_path('migrations/2020_06_04_195750_create_organisation_user_table.php')
         ], $this->shortName() . '-migrations');
     }
 
@@ -89,7 +88,7 @@ class ServiceProvider extends ServiceProvider
     {
         Route::group([
             'name' => $this->shortName(),
-            'namespace' => 'ChrisBraybrooke\SPABackend\Http\Controllers',
+            'namespace' => 'PurpleMountain\Organisations\Http\Controllers',
             'middleware' => ['web']
         ], function () {
             $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
@@ -106,7 +105,7 @@ class ServiceProvider extends ServiceProvider
         $this->publishes([
             $this->configPath(),
             $this->shortName() . '-config'
-        ]);
+        ], $this->shortName() . '-config');
     }
 
 }

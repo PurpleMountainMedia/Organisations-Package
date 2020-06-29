@@ -1,6 +1,6 @@
 <?php
 
-namespace ChrisBraybrooke\NAMESPACE_HERE;
+namespace PurpleMountain\Organisations;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
